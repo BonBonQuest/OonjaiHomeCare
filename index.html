@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ลงทะเบียนสมาชิก | Oonjai Homecare</title>
+  <!-- Google Fonts: Prompt -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- LINE LIFF SDK CDN -->
+  <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Prompt', 'sans-serif'],
+          },
+          colors: {
+            line: {
+              DEFAULT: '#06C755',
+              hover: '#05b34c',
+              light: '#e6f9ed',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Prevent text selection and unwanted iOS zoom styling */
+    body {
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    input, select {
+      -webkit-user-select: text;
+      user-select: text;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col justify-between antialiased">
+
+  <!-- MAIN CONTAINER (Mobile screen constraint) -->
+  <main class="w-full max-w-md mx-auto px-4 py-6 flex-1 flex flex-col justify-center">
+
+    <!-- 1. LOADING SCREEN -->
+    <div id="loading-screen" class="flex flex-col items-center justify-center space-y-4 py-12">
+      <div class="relative inline-flex items-center justify-center">
+        <div class="w-14 h-14 rounded-full border-4 border-gray-200 border-t-emerald-500 animate-spin"></div>
+        <div class="absolute text-emerald-600 font-bold text-xs">OJ</div>
+      </div>
+      <div class="text-center">
+        <h3 class="font-semibold text-gray-700 text-sm">กำลังโหลดข้อมูล...</h3>
+        <p class="text-gray-400 text-xs mt-1">กรุณารอสักครู่ ระบบกำลังเชื่อมต่อระบบความปลอดภัย</p>
+      </div>
+    </div>
+
+    <!-- 2. WARNING SCREEN (Accessed from external browser) -->
+    <div id="warning-screen" class="hidden text-center space-y-6 py-8 animate-fade-in">
+      <div class="mx-auto w-20 h-20 bg-red-50 rounded-full flex items-center justify-center text-red-500">
+        <!-- Shield Alert Icon -->
+        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+        </svg>
+      </div>
+      <div class="space-y-2">
+        <h2 class="text-xl font-bold text-gray-800">กรุณาเข้าใช้งานผ่านแอปพลิเคชัน LINE</h2>
+        <p class="text-sm text-gray-500 max-w-xs mx-auto leading-relaxed">
+          Please access this application through our LINE Official Account.
+        </p>
+      </div>
+      
+      <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 text-left text-xs text-gray-500 max-w-sm mx-auto">
+        <p class="font-semibold text-gray-700 mb-1">คำแนะนำการใช้งาน:</p>
+        <ol class="list-decimal list-inside space-y-1">
+          <li>เปิดแอปพลิเคชัน LINE</li>
+          <li>ค้นหาบัญชีทางการ LINE Official Account ของเรา</li>
+          <li>กดลิงก์เมนูลงทะเบียนสมาชิกจากหน้าห้องแชท</li>
+        </ol>
+      </div>
+
+      <!-- Dev Bypass Toggle (Only visible in localhost/dev) -->
+      <div id="dev-bypass-container" class="hidden pt-4">
+        <button onclick="bypassLiffForTesting()" class="bg-slate-800 hover:bg-slate-900 text-white font-medium py-2.5 px-6 rounded-xl text-xs transition duration-200">
+          ข้ามการตรวจสอบสำหรับทดสอบ (Local Dev Bypass)
+        </button>
+      </div>
+    </div>
+
+    <!-- 3. REGISTRATION FORM SCREEN -->
+    <div id="registration-screen" class="hidden space-y-6 animate-fade-in">
+      
+      <!-- Logo and App Header -->
+      <div class="text-center space-y-1">
+        <span class="inline-flex items-center gap-1 bg-emerald-100 text-emerald-800 px-3 py-0.5 rounded-full text-[10px] font-semibold tracking-wider">
+          OONJAI HOMECARE MEMBER
+        </span>
+        <h1 class="text-2xl font-bold text-gray-800">ลงทะเบียนสมาชิก</h1>
+        <p class="text-gray-500 text-xs">กรอกข้อมูลเพื่อเชื่อมต่อและรับสิทธิประโยชน์</p>
+      </div>
+
+      <!-- LINE User Info Card -->
+      <div class="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-3xl p-5 text-white shadow-xl shadow-emerald-500/10 flex items-center justify-between relative overflow-hidden">
+        <div class="absolute right-0 bottom-0 w-32 h-32 bg-white/10 rounded-full translate-x-12 translate-y-12 blur-2xl pointer-events-none"></div>
+        
+        <div class="flex items-center gap-4 relative z-10">
+          <div class="relative w-14 h-14 rounded-2xl overflow-hidden border-2 border-white/40 shadow">
+            <img id="profile-pic" src="" alt="Profile Picture" class="w-full h-full object-cover">
+          </div>
+          <div class="text-left">
+            <span id="welcome-text" class="font-semibold text-lg leading-tight block">สวัสดีผู้ใช้งาน</span>
+            <span id="user-id-text" class="text-[10px] text-emerald-100/80 font-mono mt-0.5 block truncate max-w-[190px]">LINE ID</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Inputs Container -->
+      <div class="bg-white rounded-3xl shadow-xl border border-gray-100 p-6">
+        <form id="reg-form" onsubmit="handleFormSubmit(event)" class="space-y-5">
+          
+          <!-- Full Name Input -->
+          <div class="space-y-1.5">
+            <label for="fullName" class="block text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              ชื่อ-นามสกุลจริง <span class="text-red-500">*</span>
+            </label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                <!-- User Icon -->
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                </svg>
+              </span>
+              <input
+                type="text"
+                id="fullName"
+                name="fullName"
+                required
+                autocomplete="name"
+                class="w-full pl-11 pr-4 py-3 min-h-[48px] text-sm bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition duration-200 text-gray-800 placeholder-gray-400"
+                placeholder="สมชาย อุ่นใจดี"
+              >
+            </div>
+            <p id="error-fullName" class="hidden text-xs text-red-500 pl-1"></p>
+          </div>
+
+          <!-- Gender Selector -->
+          <div class="space-y-1.5">
+            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              เพศ <span class="text-red-500">*</span>
+            </label>
+            <input type="hidden" id="gender" name="gender" required>
+            
+            <div class="grid grid-cols-3 gap-3">
+              <button
+                type="button"
+                onclick="selectGender('ชาย')"
+                id="btn-gender-ชาย"
+                class="py-3 px-2 text-center rounded-2xl border min-h-[48px] flex flex-col items-center justify-center transition duration-200 border-slate-200 bg-slate-50 text-gray-500 hover:bg-slate-100/50"
+              >
+                <span class="text-sm">ชาย</span>
+              </button>
+              <button
+                type="button"
+                onclick="selectGender('หญิง')"
+                id="btn-gender-หญิง"
+                class="py-3 px-2 text-center rounded-2xl border min-h-[48px] flex flex-col items-center justify-center transition duration-200 border-slate-200 bg-slate-50 text-gray-500 hover:bg-slate-100/50"
+              >
+                <span class="text-sm">หญิง</span>
+              </button>
+              <button
+                type="button"
+                onclick="selectGender('ไม่ระบุ')"
+                id="btn-gender-ไม่ระบุ"
+                class="py-3 px-2 text-center rounded-2xl border min-h-[48px] flex flex-col items-center justify-center transition duration-200 border-slate-200 bg-slate-50 text-gray-500 hover:bg-slate-100/50"
+              >
+                <span class="text-sm">ไม่ระบุ</span>
+              </button>
+            </div>
+            <p id="error-gender" class="hidden text-xs text-red-500 pl-1"></p>
+          </div>
+
+          <!-- Birth Date Input -->
+          <div class="space-y-1.5">
+            <label id="label-dob" for="birthDate" class="block text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              วันเดือนปีเกิด <span class="text-red-500">*</span>
+            </label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                <!-- Calendar Icon -->
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+              </span>
+              <input
+                type="date"
+                id="birthDate"
+                name="birthDate"
+                required
+                class="w-full pl-11 pr-4 py-3 min-h-[48px] text-sm bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition duration-200 text-gray-800"
+              >
+            </div>
+            <p id="error-birthDate" class="hidden text-xs text-red-500 pl-1"></p>
+          </div>
+
+          <!-- Alert for API Server Errors -->
+          <div id="api-error" class="hidden p-3.5 bg-red-50 border border-red-200 text-red-600 rounded-2xl text-xs font-medium"></div>
+
+          <!-- Submit Button -->
+          <button
+            type="submit"
+            id="submit-btn"
+            class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-medium py-3.5 rounded-2xl transition duration-200 shadow-lg shadow-emerald-500/20 active:scale-[0.98] text-sm flex items-center justify-center gap-2"
+          >
+            <span>บันทึกข้อมูลการลงทะเบียน</span>
+          </button>
+        </form>
+      </div>
+
+    </div>
+
+    <!-- 4. SUCCESS SCREEN -->
+    <div id="success-screen" class="hidden text-center space-y-6 py-8 animate-fade-in">
+      <div class="mx-auto w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-500 animate-bounce">
+        <!-- Success Check Icon -->
+        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+      </div>
+      <div class="space-y-2">
+        <h2 class="text-2xl font-bold text-gray-800">ลงทะเบียนสมาชิกสำเร็จ!</h2>
+        <p class="text-sm text-gray-400 max-w-xs mx-auto leading-relaxed">
+          ระบบได้จัดเก็บข้อมูลของคุณเรียบร้อยแล้ว หน้าต่างนี้กำลังจะปิดลงในไม่ช้า
+        </p>
+      </div>
+      <div class="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 px-4 py-1.5 rounded-full text-xs font-semibold">
+        อุ่นใจทุกครั้งที่มีเราคอยดูแล
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="w-full max-w-md mx-auto text-center py-4 text-[10px] text-gray-400">
+    © 2026 Oonjai Homecare. All rights reserved.
+  </footer>
+
+  <!-- SCRIPT LOGIC -->
+  <script>
+    // Configuration details
+    const LIFF_ID = 'YOUR_LINE_LIFF_ID'; // Replace with your LINE LIFF ID
+    const GOOGLE_APPS_SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL'; // Replace with your Web App URL
+
+    // Global variables
+    let lineUserProfile = {
+      userId: 'MOCK_USER_123456',
+      displayName: 'สมชาย ยอดรัก (จำลอง)',
+      pictureUrl: 'https://api.dicebear.com/7.x/adventurer/svg?seed=Somchai'
+    };
+
+    window.onload = function() {
+      // Check if we are running locally to show the Bypass/Mock trigger
+      const isLocalHost = window.location.hostname === 'localhost' || 
+                           window.location.hostname === '127.0.0.1' || 
+                           window.location.search.includes('dev=true');
+      
+      if (isLocalHost) {
+        document.getElementById('dev-bypass-container').classList.remove('hidden');
+      }
+
+      // Initialize LINE LIFF
+      if (LIFF_ID && LIFF_ID !== 'YOUR_LINE_LIFF_ID') {
+        initializeLiff();
+      } else {
+        console.warn('LINE LIFF ID is not configured yet. Standing by in Dev Mode.');
+        // Show warning screen but allow manual bypass for local testing
+        showScreen('warning-screen');
+      }
+    };
+
+    function showScreen(screenId) {
+      document.getElementById('loading-screen').classList.add('hidden');
+      document.getElementById('warning-screen').classList.add('hidden');
+      document.getElementById('registration-screen').classList.add('hidden');
+      document.getElementById('success-screen').classList.add('hidden');
+
+      document.getElementById(screenId).classList.remove('hidden');
+    }
+
+    function initializeLiff() {
+      liff.init({ liffId: LIFF_ID })
+        .then(() => {
+          // Strict Access Control: Must be opened inside the LINE client
+          if (!liff.isInClient()) {
+            console.warn('Application accessed outside the LINE app client.');
+            showScreen('warning-screen');
+            return;
+          }
+
+          // Enforce Login
+          if (!liff.isLoggedIn()) {
+            liff.login();
+            return;
+          }
+
+          // Fetch user profile info
+          liff.getProfile()
+            .then(profile => {
+              lineUserProfile = {
+                userId: profile.userId,
+                displayName: profile.displayName,
+                pictureUrl: profile.pictureUrl
+              };
+              
+              // Load user info to the visual card
+              document.getElementById('profile-pic').src = lineUserProfile.pictureUrl || 'https://api.dicebear.com/7.x/adventurer/svg?seed=' + encodeURIComponent(lineUserProfile.displayName);
+              document.getElementById('welcome-text').textContent = `สวัสดีคุณ ${lineUserProfile.displayName} 👋`;
+              document.getElementById('user-id-text').textContent = `LINE ID: ${lineUserProfile.userId}`;
+              
+              showScreen('registration-screen');
+            })
+            .catch(err => {
+              console.error('Error fetching LINE profile:', err);
+              showScreen('warning-screen');
+            });
+        })
+        .catch(err => {
+          console.error('LIFF initialization error:', err);
+          showScreen('warning-screen');
+        });
+    }
+
+    // Bypass/Mock functionality for local development
+    function bypassLiffForTesting() {
+      console.log('Bypassing LINE LIFF environment check for local developer review.');
+      
+      // Update UI elements with mock user
+      document.getElementById('profile-pic').src = lineUserProfile.pictureUrl;
+      document.getElementById('welcome-text').textContent = `สวัสดีคุณ ${lineUserProfile.displayName} (จำลอง)`;
+      document.getElementById('user-id-text').textContent = `LINE ID: ${lineUserProfile.userId}`;
+      
+      showScreen('registration-screen');
+    }
+
+    // Interactive gender selection state
+    function selectGender(selected) {
+      document.getElementById('gender').value = selected;
+      document.getElementById('error-gender').classList.add('hidden');
+
+      // Update button visual styles
+      ['ชาย', 'หญิง', 'ไม่ระบุ'].forEach(g => {
+        const btn = document.getElementById(`btn-gender-${g}`);
+        if (g === selected) {
+          btn.className = 'py-3 px-2 text-center rounded-2xl border min-h-[48px] flex flex-col items-center justify-center transition duration-200 border-emerald-500 bg-emerald-50/50 text-emerald-700 font-semibold ring-2 ring-emerald-400/20';
+        } else {
+          btn.className = 'py-3 px-2 text-center rounded-2xl border min-h-[48px] flex flex-col items-center justify-center transition duration-200 border-slate-200 bg-slate-50 text-gray-500 hover:bg-slate-100/50';
+        }
+      });
+    }
+
+    // Validate registration inputs before submitting
+    function validateForm() {
+      let isValid = true;
+      const fullName = document.getElementById('fullName').value.trim();
+      const gender = document.getElementById('gender').value;
+      const birthDate = document.getElementById('birthDate').value;
+
+      // Full Name Validation
+      if (!fullName) {
+        showError('fullName', 'กรุณากรอกชื่อ-นามสกุลจริง');
+        isValid = false;
+      } else if (fullName.split(' ').length < 2) {
+        showError('fullName', 'กรุณากรอกทั้งชื่อและนามสกุลจริง โดยมีเว้นวรรคคั่นตรงกลาง');
+        isValid = false;
+      } else {
+        clearError('fullName');
+      }
+
+      // Gender Validation
+      if (!gender) {
+        showError('gender', 'กรุณาเลือกเพศ');
+        isValid = false;
+      } else {
+        clearError('gender');
+      }
+
+      // DOB Validation
+      if (!birthDate) {
+        showError('birthDate', 'กรุณาระบุวันเกิด');
+        isValid = false;
+      } else {
+        const selectedDate = new Date(birthDate);
+        const today = new Date();
+        if (selectedDate > today) {
+          showError('birthDate', 'วันเกิดห้ามเป็นวันที่ในอนาคต');
+          isValid = false;
+        } else if (selectedDate < new Date('1900-01-01')) {
+          showError('birthDate', 'กรุณาระบุวันเกิดที่ถูกต้อง');
+          isValid = false;
+        } else {
+          clearError('birthDate');
+        }
+      }
+
+      return isValid;
+    }
+
+    function showError(fieldId, msg) {
+      const errEl = document.getElementById(`error-${fieldId}`);
+      errEl.textContent = msg;
+      errEl.classList.remove('hidden');
+
+      const input = document.getElementById(fieldId);
+      if (input && input.tagName !== 'INPUT' && input.type !== 'hidden') {
+        input.classList.add('border-red-400', 'focus:ring-red-100');
+      }
+    }
+
+    function clearError(fieldId) {
+      document.getElementById(`error-${fieldId}`).classList.add('hidden');
+      const input = document.getElementById(fieldId);
+      if (input && input.tagName !== 'INPUT' && input.type !== 'hidden') {
+        input.classList.remove('border-red-400', 'focus:ring-red-100');
+      }
+    }
+
+    // Submit payload to Google Sheets (via Apps Script Web App)
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      if (!validateForm()) return;
+
+      const submitBtn = document.getElementById('submit-btn');
+      const errorPanel = document.getElementById('api-error');
+
+      // Update loading status
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `
+        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <span>กำลังบันทึกข้อมูล...</span>
+      `;
+      errorPanel.classList.add('hidden');
+
+      // Assemble payload
+      const payload = {
+        userId: lineUserProfile.userId,
+        displayName: lineUserProfile.displayName,
+        pictureUrl: lineUserProfile.pictureUrl || '',
+        fullName: document.getElementById('fullName').value.trim(),
+        gender: document.getElementById('gender').value,
+        birthDate: document.getElementById('birthDate').value
+      };
+
+      console.log('Sending payload:', payload);
+
+      if (GOOGLE_APPS_SCRIPT_URL === 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL') {
+        // Warning if URL is placeholder
+        console.warn('Apps Script URL is not configured. Mocking success...');
+        setTimeout(() => {
+          showScreen('success-screen');
+          closeLiffAfterDelay();
+        }, 1500);
+        return;
+      }
+
+      // Send POST request
+      fetch(GOOGLE_APPS_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'cors',
+        headers: {
+          'Content-Type': 'text/plain' // Using text/plain is a reliable way to avoid CORS preflight options issues in Apps Script
+        },
+        body: JSON.stringify(payload)
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('การตอบสนองจากเซิร์ฟเวอร์เกิดข้อผิดพลาด');
+        }
+        return response.json();
+      })
+      .then(result => {
+        if (result.status === 'success') {
+          showScreen('success-screen');
+          closeLiffAfterDelay();
+        } else {
+          throw new Error(result.message || 'ไม่สามารถจัดเก็บข้อมูลลงระบบฐานข้อมูลได้');
+        }
+      })
+      .catch(err => {
+        console.error('Fetch post error:', err);
+        errorPanel.textContent = 'เกิดข้อผิดพลาดในการส่งข้อมูล: ' + err.message + ' (กรุณาตรวจสอบการติดตั้ง Google Apps Script)';
+        errorPanel.classList.remove('hidden');
+        
+        // Reset submit button status
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<span>บันทึกข้อมูลการลงทะเบียน</span>';
+      });
+    }
+
+    // Helper to close LIFF window after a short delay so user can read success feedback
+    function closeLiffAfterDelay() {
+      setTimeout(() => {
+        if (typeof liff !== 'undefined' && liff.closeWindow) {
+          liff.closeWindow();
+        } else {
+          console.log('liff.closeWindow() called (outside LINE LIFF context).');
+        }
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
