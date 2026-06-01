@@ -56,7 +56,7 @@
         <div class="absolute text-emerald-600 font-bold text-xs">OJ</div>
       </div>
       <div class="text-center">
-        <h3 class="font-semibold text-gray-700 text-sm">กำลังโหลดข้อมูล...</h3>
+        <h3 id="loading-text" class="font-semibold text-gray-700 text-sm">กำลังโหลดข้อมูล...</h3>
         <p class="text-gray-400 text-xs mt-1">กรุณารอสักครู่ ระบบกำลังเชื่อมต่อระบบความปลอดภัย</p>
       </div>
     </div>
@@ -126,7 +126,7 @@
           
           <!-- Full Name Input -->
           <div class="space-y-1.5">
-            <label for="fullName" class="block text-xs font-semibold text-gray-500 uppercase tracking-wider">
+            <label border-color for="fullName" class="block text-xs font-semibold text-gray-500 uppercase tracking-wider">
               ชื่อ-นามสกุลจริง <span class="text-red-500">*</span>
             </label>
             <div class="relative">
@@ -185,25 +185,50 @@
             <p id="error-gender" class="hidden text-xs text-red-500 pl-1"></p>
           </div>
 
-          <!-- Birth Date Input -->
+          <!-- Birth Date Input (3 Dropdowns) -->
           <div class="space-y-1.5">
-            <label id="label-dob" for="birthDate" class="block text-xs font-semibold text-gray-500 uppercase tracking-wider">
+            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider">
               วันเดือนปีเกิด <span class="text-red-500">*</span>
             </label>
-            <div class="relative">
-              <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
-                <!-- Calendar Icon -->
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                </svg>
-              </span>
-              <input
-                type="date"
-                id="birthDate"
-                name="birthDate"
-                required
-                class="w-full pl-11 pr-4 py-3 min-h-[48px] text-sm bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition duration-200 text-gray-800"
-              >
+            <div class="grid grid-cols-3 gap-2">
+              <!-- Day Select -->
+              <div class="relative">
+                <select
+                  id="dob-day"
+                  required
+                  class="w-full pl-3 pr-8 py-3 min-h-[48px] text-sm bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition duration-200 text-gray-800 appearance-none"
+                >
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
+                  <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                </div>
+              </div>
+              
+              <!-- Month Select -->
+              <div class="relative">
+                <select
+                  id="dob-month"
+                  required
+                  class="w-full pl-3 pr-8 py-3 min-h-[48px] text-sm bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition duration-200 text-gray-800 appearance-none"
+                >
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
+                  <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                </div>
+              </div>
+
+              <!-- Year Select -->
+              <div class="relative">
+                <select
+                  id="dob-year"
+                  required
+                  class="w-full pl-3 pr-8 py-3 min-h-[48px] text-sm bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition duration-200 text-gray-800 appearance-none"
+                >
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
+                  <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                </div>
+              </div>
             </div>
             <p id="error-birthDate" class="hidden text-xs text-red-500 pl-1"></p>
           </div>
@@ -243,6 +268,28 @@
       </div>
     </div>
 
+    <!-- 5. ALREADY REGISTERED SCREEN -->
+    <div id="already-registered-screen" class="hidden text-center space-y-6 py-8 animate-fade-in">
+      <div class="mx-auto w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-500 animate-bounce">
+        <!-- Shield Checked Icon -->
+        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+        </svg>
+      </div>
+      <div class="space-y-2">
+        <h2 class="text-xl font-bold text-gray-800">คุณเคยสมัครสมาชิกเรียบร้อยแล้ว</h2>
+        <p class="text-sm text-gray-400 max-w-xs mx-auto leading-relaxed">
+          บัญชี LINE นี้ถูกเชื่อมต่อกับระบบสมาชิก Oonjai Homecare เรียบร้อยแล้ว ไม่จำเป็นต้องลงทะเบียนซ้ำ
+        </p>
+      </div>
+      <button
+        onclick="closeLiffWindow()"
+        class="bg-emerald-500 hover:bg-emerald-600 text-white font-medium py-3 px-8 rounded-2xl transition duration-200 shadow-lg shadow-emerald-500/20 active:scale-[0.98] text-sm"
+      >
+        ปิดหน้าต่างนี้
+      </button>
+    </div>
+
   </main>
 
   <!-- Footer -->
@@ -252,9 +299,9 @@
 
   <!-- SCRIPT LOGIC -->
   <script>
-    // Configuration details
-    const LIFF_ID = '2010259136-O4ggq2rb'; // Replace with your LINE LIFF ID
-    const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxW73OyEMetyC1lk4aJPof1SxjEdhvdPRgbGfIzkUYLrSksFzkWWYGPDYBGrgNuo1gm-A/exec'; // Replace with your Web App URL
+    // Hardcoded Constant configurations (As explicitly requested by the USER)
+    const LIFF_ID = '2010259136-O4ggq2rb';
+    const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxW73OyEMetyC1lk4aJPof1SxjEdhvdPRgbGfIzkUYLrSksFzkWWYGPDYBGrgNuo1gm-A/exec';
 
     // Global variables
     let lineUserProfile = {
@@ -264,6 +311,9 @@
     };
 
     window.onload = function() {
+      // Populate Date of Birth Dropdowns
+      populateDobDropdowns();
+
       // Check if we are running locally to show the Bypass/Mock trigger
       const isLocalHost = window.location.hostname === 'localhost' || 
                            window.location.hostname === '127.0.0.1' || 
@@ -278,16 +328,65 @@
         initializeLiff();
       } else {
         console.warn('LINE LIFF ID is not configured yet. Standing by in Dev Mode.');
-        // Show warning screen but allow manual bypass for local testing
         showScreen('warning-screen');
       }
     };
+
+    // Populate Day, Month, Year selectors dynamically
+    function populateDobDropdowns() {
+      // Days (1-31)
+      const daySelect = document.getElementById('dob-day');
+      for (let d = 1; d <= 31; d++) {
+        const opt = document.createElement('option');
+        opt.value = d.toString();
+        opt.textContent = d.toString();
+        if (d === 1) opt.selected = true;
+        daySelect.appendChild(opt);
+      }
+
+      // Months (January - December)
+      const months = [
+        { val: '01', name: 'มกราคม (January)' },
+        { val: '02', name: 'กุมภาพันธ์ (February)' },
+        { val: '03', name: 'มีนาคม (March)' },
+        { val: '04', name: 'เมษายน (April)' },
+        { val: '05', name: 'พฤษภาคม (May)' },
+        { val: '06', name: 'มิถุนายน (June)' },
+        { val: '07', name: 'กรกฎาคม (July)' },
+        { val: '08', name: 'สิงหาคม (August)' },
+        { val: '09', name: 'กันยายน (September)' },
+        { val: '10', name: 'ตุลาคม (October)' },
+        { val: '11', name: 'พฤศจิกายน (November)' },
+        { val: '12', name: 'ธันวาคม (December)' }
+      ];
+      const monthSelect = document.getElementById('dob-month');
+      months.forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m.val;
+        opt.textContent = m.name;
+        if (m.val === '01') opt.selected = true;
+        monthSelect.appendChild(opt);
+      });
+
+      // Years (Christian Era / Buddhist Era side-by-side) with 1980 selected
+      const yearSelect = document.getElementById('dob-year');
+      const currentYear = new Date().getFullYear();
+      for (let y = 1900; y <= currentYear; y++) {
+        const opt = document.createElement('option');
+        opt.value = y.toString();
+        // Thai users standard display format: พ.ศ. (ค.ศ.)
+        opt.textContent = `พ.ศ. ${y + 543} (${y})`;
+        if (y === 1980) opt.selected = true;
+        yearSelect.appendChild(opt);
+      }
+    }
 
     function showScreen(screenId) {
       document.getElementById('loading-screen').classList.add('hidden');
       document.getElementById('warning-screen').classList.add('hidden');
       document.getElementById('registration-screen').classList.add('hidden');
       document.getElementById('success-screen').classList.add('hidden');
+      document.getElementById('already-registered-screen').classList.add('hidden');
 
       document.getElementById(screenId).classList.remove('hidden');
     }
@@ -322,7 +421,12 @@
               document.getElementById('welcome-text').textContent = `สวัสดีคุณ ${lineUserProfile.displayName} 👋`;
               document.getElementById('user-id-text').textContent = `LINE ID: ${lineUserProfile.userId}`;
               
-              showScreen('registration-screen');
+              // Show verifying loading text
+              document.getElementById('loading-text').textContent = 'กำลังตรวจสอบข้อมูลสมาชิกของคุณ...';
+              showScreen('loading-screen');
+
+              // Check if user already exists in Google Sheet database
+              checkDuplicateUser(lineUserProfile.userId);
             })
             .catch(err => {
               console.error('Error fetching LINE profile:', err);
@@ -335,6 +439,40 @@
         });
     }
 
+    // Call Google Apps Script doGet to verify duplicate User ID
+    function checkDuplicateUser(userId) {
+      const checkUrl = `${GOOGLE_APPS_SCRIPT_URL}?action=check&userId=${encodeURIComponent(userId)}`;
+      
+      fetch(checkUrl, {
+        method: 'GET',
+        mode: 'cors'
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('การตอบสนองจากระบบเช็คสถานะขัดข้อง');
+        }
+        return response.json();
+      })
+      .then(result => {
+        if (result.exists) {
+          // User already exists! Hide form and show registered notice
+          showScreen('already-registered-screen');
+        } else {
+          // User does not exist. Show registration form
+          showScreen('registration-screen');
+        }
+      })
+      .catch(err => {
+        console.error('Failed to verify duplicate user:', err);
+        // Fallback for debugging/testing: allow them to see form but show warning
+        showScreen('registration-screen');
+        
+        const errorPanel = document.getElementById('api-error');
+        errorPanel.textContent = 'หมายเหตุ: ไม่สามารถติดต่อระบบตรวจสอบสมาชิกซ้ำได้ชั่วคราว (' + err.message + ')';
+        errorPanel.classList.remove('hidden');
+      });
+    }
+
     // Bypass/Mock functionality for local development
     function bypassLiffForTesting() {
       console.log('Bypassing LINE LIFF environment check for local developer review.');
@@ -344,7 +482,13 @@
       document.getElementById('welcome-text').textContent = `สวัสดีคุณ ${lineUserProfile.displayName} (จำลอง)`;
       document.getElementById('user-id-text').textContent = `LINE ID: ${lineUserProfile.userId}`;
       
-      showScreen('registration-screen');
+      document.getElementById('loading-text').textContent = 'กำลังตรวจสอบข้อมูลสมาชิกของคุณ (จำลอง)...';
+      showScreen('loading-screen');
+
+      setTimeout(() => {
+        // Run duplicate user check simulation
+        checkDuplicateUser(lineUserProfile.userId);
+      }, 1000);
     }
 
     // Interactive gender selection state
@@ -368,7 +512,6 @@
       let isValid = true;
       const fullName = document.getElementById('fullName').value.trim();
       const gender = document.getElementById('gender').value;
-      const birthDate = document.getElementById('birthDate').value;
 
       // Full Name Validation
       if (!fullName) {
@@ -389,44 +532,35 @@
         clearError('gender');
       }
 
-      // DOB Validation
-      if (!birthDate) {
-        showError('birthDate', 'กรุณาระบุวันเกิด');
+      // DOB Validation (Logical validation of dropdown values)
+      const dayVal = parseInt(document.getElementById('dob-day').value);
+      const monthVal = parseInt(document.getElementById('dob-month').value);
+      const yearVal = parseInt(document.getElementById('dob-year').value);
+
+      if (!isValidDate(yearVal, monthVal, dayVal)) {
+        showError('birthDate', 'กรุณาเลือกวันเดือนปีเกิดที่ถูกต้อง (ระบุวันที่ไม่มีอยู่จริงในปฏิทิน)');
         isValid = false;
       } else {
-        const selectedDate = new Date(birthDate);
-        const today = new Date();
-        if (selectedDate > today) {
-          showError('birthDate', 'วันเกิดห้ามเป็นวันที่ในอนาคต');
-          isValid = false;
-        } else if (selectedDate < new Date('1900-01-01')) {
-          showError('birthDate', 'กรุณาระบุวันเกิดที่ถูกต้อง');
-          isValid = false;
-        } else {
-          clearError('birthDate');
-        }
+        clearError('birthDate');
       }
 
       return isValid;
+    }
+
+    // Helper to check if Day/Month/Year is valid (e.g. rejects Feb 31)
+    function isValidDate(year, month, day) {
+      const d = new Date(year, month - 1, day);
+      return d.getFullYear() === year && d.getMonth() === month - 1 && d.getDate() === day;
     }
 
     function showError(fieldId, msg) {
       const errEl = document.getElementById(`error-${fieldId}`);
       errEl.textContent = msg;
       errEl.classList.remove('hidden');
-
-      const input = document.getElementById(fieldId);
-      if (input && input.tagName !== 'INPUT' && input.type !== 'hidden') {
-        input.classList.add('border-red-400', 'focus:ring-red-100');
-      }
     }
 
     function clearError(fieldId) {
       document.getElementById(`error-${fieldId}`).classList.add('hidden');
-      const input = document.getElementById(fieldId);
-      if (input && input.tagName !== 'INPUT' && input.type !== 'hidden') {
-        input.classList.remove('border-red-400', 'focus:ring-red-100');
-      }
     }
 
     // Submit payload to Google Sheets (via Apps Script Web App)
@@ -448,6 +582,12 @@
       `;
       errorPanel.classList.add('hidden');
 
+      // Concatenate dropdown values into a single date string (YYYY-MM-DD)
+      const dayVal = document.getElementById('dob-day').value.padStart(2, '0');
+      const monthVal = document.getElementById('dob-month').value;
+      const yearVal = document.getElementById('dob-year').value;
+      const formattedBirthDate = `${yearVal}-${monthVal}-${dayVal}`;
+
       // Assemble payload
       const payload = {
         userId: lineUserProfile.userId,
@@ -455,27 +595,17 @@
         pictureUrl: lineUserProfile.pictureUrl || '',
         fullName: document.getElementById('fullName').value.trim(),
         gender: document.getElementById('gender').value,
-        birthDate: document.getElementById('birthDate').value
+        birthDate: formattedBirthDate
       };
 
       console.log('Sending payload:', payload);
-
-      if (GOOGLE_APPS_SCRIPT_URL === 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL') {
-        // Warning if URL is placeholder
-        console.warn('Apps Script URL is not configured. Mocking success...');
-        setTimeout(() => {
-          showScreen('success-screen');
-          closeLiffAfterDelay();
-        }, 1500);
-        return;
-      }
 
       // Send POST request
       fetch(GOOGLE_APPS_SCRIPT_URL, {
         method: 'POST',
         mode: 'cors',
         headers: {
-          'Content-Type': 'text/plain' // Using text/plain is a reliable way to avoid CORS preflight options issues in Apps Script
+          'Content-Type': 'text/plain'
         },
         body: JSON.stringify(payload)
       })
@@ -495,7 +625,7 @@
       })
       .catch(err => {
         console.error('Fetch post error:', err);
-        errorPanel.textContent = 'เกิดข้อผิดพลาดในการส่งข้อมูล: ' + err.message + ' (กรุณาตรวจสอบการติดตั้ง Google Apps Script)';
+        errorPanel.textContent = 'เกิดข้อผิดพลาดในการส่งข้อมูล: ' + err.message;
         errorPanel.classList.remove('hidden');
         
         // Reset submit button status
@@ -504,14 +634,19 @@
       });
     }
 
+    // Helper to close LIFF window
+    function closeLiffWindow() {
+      if (typeof liff !== 'undefined' && liff.closeWindow) {
+        liff.closeWindow();
+      } else {
+        console.log('liff.closeWindow() called (outside LINE LIFF context).');
+      }
+    }
+
     // Helper to close LIFF window after a short delay so user can read success feedback
     function closeLiffAfterDelay() {
       setTimeout(() => {
-        if (typeof liff !== 'undefined' && liff.closeWindow) {
-          liff.closeWindow();
-        } else {
-          console.log('liff.closeWindow() called (outside LINE LIFF context).');
-        }
+        closeLiffWindow();
       }, 3000);
     }
   </script>
