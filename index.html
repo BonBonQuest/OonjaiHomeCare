@@ -85,10 +85,13 @@
         </ol>
       </div>
 
-      <!-- Dev Bypass Toggle (Only visible in localhost/dev) -->
-      <div id="dev-bypass-container" class="hidden pt-4">
-        <button onclick="bypassLiffForTesting()" class="bg-slate-800 hover:bg-slate-900 text-white font-medium py-2.5 px-6 rounded-xl text-xs transition duration-200">
-          ข้ามการตรวจสอบสำหรับทดสอบ (Local Dev Bypass)
+      <!-- Developer Mode Button -->
+      <div id="dev-bypass-container" class="hidden pt-4 max-w-sm mx-auto">
+        <button onclick="bypassLiffForTesting()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-medium py-3 px-6 rounded-2xl text-sm transition duration-200 flex items-center justify-center gap-2 shadow-lg active:scale-[0.98]">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+          </svg>
+          <span>เข้าใช้งานในฐานะ Developer (จำลองข้อมูล)</span>
         </button>
       </div>
     </div>
@@ -143,7 +146,7 @@
                 required
                 autocomplete="name"
                 class="w-full pl-11 pr-4 py-3 min-h-[48px] text-sm bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition duration-200 text-gray-800 placeholder-gray-400"
-                placeholder="อุ่นใจ โฮมแคร์"
+                placeholder="สมชาย อุ่นใจดี"
               >
             </div>
             <p id="error-fullName" class="hidden text-xs text-red-500 pl-1"></p>
@@ -306,7 +309,7 @@
     // Global variables
     let lineUserProfile = {
       userId: 'MOCK_USER_123456',
-      displayName: 'สมชาย ยอดรัก (จำลอง)',
+      displayName: 'อุ่นใจ โฮมแคร์',
       pictureUrl: 'https://api.dicebear.com/7.x/adventurer/svg?seed=Somchai'
     };
 
@@ -314,10 +317,20 @@
       // Populate Date of Birth Dropdowns
       populateDobDropdowns();
 
+      // Check if liff is defined and has login function
+      const hasLiffLogin = (typeof liff !== 'undefined' && typeof liff.login === 'function');
+
       // Check if we are running locally to show the Bypass/Mock trigger
       const isLocalHost = window.location.hostname === 'localhost' || 
                            window.location.hostname === '127.0.0.1' || 
                            window.location.search.includes('dev=true');
+
+      if (!hasLiffLogin) {
+        console.warn('LINE LIFF SDK or liff.login() not found. Showing Developer Mode trigger.');
+        document.getElementById('dev-bypass-container').classList.remove('hidden');
+        showScreen('warning-screen');
+        return;
+      }
       
       if (isLocalHost) {
         document.getElementById('dev-bypass-container').classList.remove('hidden');
@@ -328,6 +341,7 @@
         initializeLiff();
       } else {
         console.warn('LINE LIFF ID is not configured yet. Standing by in Dev Mode.');
+        document.getElementById('dev-bypass-container').classList.remove('hidden');
         showScreen('warning-screen');
       }
     };
@@ -397,11 +411,19 @@
           // Strict Access Control: Must be opened inside the LINE client
           if (!liff.isInClient()) {
             console.warn('Application accessed outside the LINE app client.');
+            document.getElementById('dev-bypass-container').classList.remove('hidden');
             showScreen('warning-screen');
             return;
           }
 
           // Enforce Login
+          if (typeof liff.login !== 'function') {
+            console.warn('liff.login() function not found after init.');
+            document.getElementById('dev-bypass-container').classList.remove('hidden');
+            showScreen('warning-screen');
+            return;
+          }
+
           if (!liff.isLoggedIn()) {
             liff.login();
             return;
@@ -430,11 +452,13 @@
             })
             .catch(err => {
               console.error('Error fetching LINE profile:', err);
+              document.getElementById('dev-bypass-container').classList.remove('hidden');
               showScreen('warning-screen');
             });
         })
         .catch(err => {
           console.error('LIFF initialization error:', err);
+          document.getElementById('dev-bypass-container').classList.remove('hidden');
           showScreen('warning-screen');
         });
     }
@@ -475,14 +499,21 @@
 
     // Bypass/Mock functionality for local development
     function bypassLiffForTesting() {
-      console.log('Bypassing LINE LIFF environment check for local developer review.');
+      console.log('Entering in Developer Mode with simulated LINE profile data.');
+      
+      // Simulating complete LINE Profile info dynamically
+      lineUserProfile = {
+        userId: 'DEV_MOCK_' + Math.floor(100000 + Math.random() * 900000),
+        displayName: 'สมศักดิ์ รักดี (Developer)',
+        pictureUrl: 'https://api.dicebear.com/7.x/adventurer/svg?seed=Developer'
+      };
       
       // Update UI elements with mock user
       document.getElementById('profile-pic').src = lineUserProfile.pictureUrl;
-      document.getElementById('welcome-text').textContent = `สวัสดีคุณ ${lineUserProfile.displayName} (จำลอง)`;
+      document.getElementById('welcome-text').textContent = `สวัสดีคุณ ${lineUserProfile.displayName} (Developer Mode) 🛠️`;
       document.getElementById('user-id-text').textContent = `LINE ID: ${lineUserProfile.userId}`;
       
-      document.getElementById('loading-text').textContent = 'กำลังตรวจสอบข้อมูลสมาชิกของคุณ (จำลอง)...';
+      document.getElementById('loading-text').textContent = 'กำลังจำลองการตรวจสอบข้อมูลสมาชิก...';
       showScreen('loading-screen');
 
       setTimeout(() => {
