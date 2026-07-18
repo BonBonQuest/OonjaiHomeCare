@@ -132,24 +132,33 @@
             <!-- Title Select -->
             <div class="space-y-1.5 col-span-1">
               <label for="title" class="block text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                คำนำหน้า <span class="text-red-500">*</span>
+                คำนำหน้า
               </label>
-              <div class="relative">
-                <select
-                  id="title"
-                  name="title"
-                  required
-                  class="w-full pl-3 pr-8 py-3 min-h-[48px] text-sm bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition duration-200 text-gray-800 appearance-none"
-                >
-                  <option value="" disabled selected>เลือก</option>
-                  <option value="นาย">นาย</option>
-                  <option value="นาง">นาง</option>
-                  <option value="นางสาว">นางสาว</option>
-                  <option value="อื่นๆ">อื่นๆ</option>
-                </select>
-                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
-                  <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+              <div class="space-y-2">
+                <div class="relative">
+                  <select
+                    id="title"
+                    name="title"
+                    onchange="handleTitleChange(this.value)"
+                    class="w-full pl-3 pr-8 py-3 min-h-[48px] text-sm bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition duration-200 text-gray-800 appearance-none"
+                  >
+                    <option value="" selected>เลือก</option>
+                    <option value="นาย">นาย</option>
+                    <option value="นาง">นาง</option>
+                    <option value="นางสาว">นางสาว</option>
+                    <option value="อื่นๆ">อื่นๆ</option>
+                  </select>
+                  <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
+                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                  </div>
                 </div>
+                <!-- Custom Title Input -->
+                <input
+                  type="text"
+                  id="custom-title"
+                  placeholder="ระบุ เช่น ดร."
+                  class="hidden w-full px-3 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 transition duration-200 text-gray-800"
+                >
               </div>
               <p id="error-title" class="hidden text-xs text-red-500 pl-1"></p>
             </div>
@@ -183,9 +192,9 @@
           <!-- Gender Selector -->
           <div class="space-y-1.5">
             <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider">
-              เพศ <span class="text-red-500">*</span>
+              เพศ
             </label>
-            <input type="hidden" id="gender" name="gender" required>
+            <input type="hidden" id="gender" name="gender">
             
             <div class="grid grid-cols-3 gap-3">
               <button
@@ -219,14 +228,13 @@
           <!-- Birth Date Input (3 Dropdowns) -->
           <div class="space-y-1.5">
             <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider">
-              วันเดือนปีเกิด <span class="text-red-500">*</span>
+              วันเดือนปีเกิด
             </label>
             <div class="grid grid-cols-3 gap-2">
               <!-- Day Select -->
               <div class="relative">
                 <select
                   id="dob-day"
-                  required
                   class="w-full pl-3 pr-8 py-3 min-h-[48px] text-sm bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition duration-200 text-gray-800 appearance-none"
                 >
                 </select>
@@ -239,7 +247,6 @@
               <div class="relative">
                 <select
                   id="dob-month"
-                  required
                   class="w-full pl-3 pr-8 py-3 min-h-[48px] text-sm bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition duration-200 text-gray-800 appearance-none"
                 >
                 </select>
@@ -252,7 +259,6 @@
               <div class="relative">
                 <select
                   id="dob-year"
-                  required
                   class="w-full pl-3 pr-8 py-3 min-h-[48px] text-sm bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition duration-200 text-gray-800 appearance-none"
                 >
                 </select>
@@ -295,7 +301,7 @@
           <!-- Address Line Input -->
           <div class="space-y-1.5">
             <label for="addressLine" class="block text-xs font-semibold text-gray-500 uppercase tracking-wider">
-              บ้านเลขที่ / ซอย / ถนน <span class="text-red-500">*</span>
+              บ้านเลขที่ / ซอย / ถนน
             </label>
             <div class="relative">
               <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
@@ -308,7 +314,6 @@
                 type="text"
                 id="addressLine"
                 name="addressLine"
-                required
                 class="w-full pl-11 pr-4 py-3 min-h-[48px] text-sm bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition duration-200 text-gray-800 placeholder-gray-400"
                 placeholder="123/45 หมู่ 5 ซอยสุขุมวิท 21 ถนนสุขุมวิท"
               >
@@ -321,13 +326,12 @@
             <!-- Sub-district Input -->
             <div class="space-y-1.5">
               <label for="subDistrict" class="block text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                แขวง / ตำบล <span class="text-red-500">*</span>
+                แขวง / ตำบล
               </label>
               <input
                 type="text"
                 id="subDistrict"
                 name="subDistrict"
-                required
                 class="w-full px-4 py-3 min-h-[48px] text-sm bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition duration-200 text-gray-800 placeholder-gray-400"
                 placeholder="คลองเตยเหนือ"
               >
@@ -337,13 +341,12 @@
             <!-- District Input -->
             <div class="space-y-1.5">
               <label for="district" class="block text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                เขต / อำเภอ <span class="text-red-500">*</span>
+                เขต / อำเภอ
               </label>
               <input
                 type="text"
                 id="district"
                 name="district"
-                required
                 class="w-full px-4 py-3 min-h-[48px] text-sm bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition duration-200 text-gray-800 placeholder-gray-400"
                 placeholder="วัฒนา"
               >
@@ -356,13 +359,12 @@
             <!-- Province Select -->
             <div class="space-y-1.5">
               <label for="province" class="block text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                จังหวัด <span class="text-red-500">*</span>
+                จังหวัด
               </label>
               <div class="relative">
                 <select
                   id="province"
                   name="province"
-                  required
                   class="w-full pl-3 pr-8 py-3 min-h-[48px] text-sm bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition duration-200 text-gray-800 appearance-none"
                 >
                   <option value="" disabled selected>เลือกจังหวัด</option>
@@ -377,13 +379,12 @@
             <!-- Postal Code Input -->
             <div class="space-y-1.5">
               <label for="postalCode" class="block text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                รหัสไปรษณีย์ <span class="text-red-500">*</span>
+                รหัสไปรษณีย์
               </label>
               <input
                 type="text"
                 id="postalCode"
                 name="postalCode"
-                required
                 maxlength="5"
                 inputmode="numeric"
                 pattern="[0-9]{5}"
@@ -581,11 +582,11 @@
     function populateDobDropdowns() {
       // Days (1-31)
       const daySelect = document.getElementById('dob-day');
+      daySelect.innerHTML = '<option value="" selected>วัน</option>';
       for (let d = 1; d <= 31; d++) {
         const opt = document.createElement('option');
         opt.value = d.toString();
         opt.textContent = d.toString();
-        if (d === 1) opt.selected = true;
         daySelect.appendChild(opt);
       }
 
@@ -605,24 +606,36 @@
         { val: '12', name: 'ธันวาคม (December)' }
       ];
       const monthSelect = document.getElementById('dob-month');
+      monthSelect.innerHTML = '<option value="" selected>เดือน</option>';
       months.forEach(m => {
         const opt = document.createElement('option');
         opt.value = m.val;
         opt.textContent = m.name;
-        if (m.val === '01') opt.selected = true;
         monthSelect.appendChild(opt);
       });
 
-      // Years (Christian Era / Buddhist Era side-by-side) with 1980 selected
+      // Years (Christian Era / Buddhist Era side-by-side)
       const yearSelect = document.getElementById('dob-year');
+      yearSelect.innerHTML = '<option value="" selected>ปี</option>';
       const currentYear = new Date().getFullYear();
       for (let y = 1900; y <= currentYear; y++) {
         const opt = document.createElement('option');
         opt.value = y.toString();
-        // Thai users standard display format: พ.ศ. (ค.ศ.)
         opt.textContent = `พ.ศ. ${y + 543} (${y})`;
-        if (y === 1980) opt.selected = true;
         yearSelect.appendChild(opt);
+      }
+    }
+
+    // Handles Title custom option visibility
+    function handleTitleChange(val) {
+      const customTitleInput = document.getElementById('custom-title');
+      if (val === 'อื่นๆ') {
+        customTitleInput.classList.remove('hidden');
+        customTitleInput.required = true;
+      } else {
+        customTitleInput.classList.add('hidden');
+        customTitleInput.required = false;
+        customTitleInput.value = '';
       }
     }
 
@@ -785,24 +798,20 @@
     function validateForm() {
       let isValid = true;
       const title = document.getElementById('title').value;
+      const customTitle = document.getElementById('custom-title').value.trim();
       const fullName = document.getElementById('fullName').value.trim();
-      const gender = document.getElementById('gender').value;
       const phone = document.getElementById('phone').value.trim();
-      const addressLine = document.getElementById('addressLine').value.trim();
-      const subDistrict = document.getElementById('subDistrict').value.trim();
-      const district = document.getElementById('district').value.trim();
-      const province = document.getElementById('province').value;
       const postalCode = document.getElementById('postalCode').value.trim();
 
-      // Title validation
-      if (!title) {
-        showError('title', 'กรุณาเลือกคำนำหน้า');
+      // Custom Title validation
+      if (title === 'อื่นๆ' && !customTitle) {
+        showError('title', 'กรุณาระบุคำนำหน้าของคุณ');
         isValid = false;
       } else {
         clearError('title');
       }
 
-      // Full Name Validation
+      // Full Name Validation (Required)
       if (!fullName) {
         showError('fullName', 'กรุณากรอกชื่อ-นามสกุลจริง');
         isValid = false;
@@ -813,27 +822,7 @@
         clearError('fullName');
       }
 
-      // Gender Validation
-      if (!gender) {
-        showError('gender', 'กรุณาเลือกเพศ');
-        isValid = false;
-      } else {
-        clearError('gender');
-      }
-
-      // DOB Validation (Logical validation of dropdown values)
-      const dayVal = parseInt(document.getElementById('dob-day').value);
-      const monthVal = parseInt(document.getElementById('dob-month').value);
-      const yearVal = parseInt(document.getElementById('dob-year').value);
-
-      if (!isValidDate(yearVal, monthVal, dayVal)) {
-        showError('birthDate', 'กรุณาเลือกวันเดือนปีเกิดที่ถูกต้อง (ระบุวันที่ไม่มีอยู่จริงในปฏิทิน)');
-        isValid = false;
-      } else {
-        clearError('birthDate');
-      }
-
-      // Phone Validation
+      // Phone Validation (Required)
       if (!phone) {
         showError('phone', 'กรุณากรอกเบอร์โทรศัพท์');
         isValid = false;
@@ -844,43 +833,33 @@
         clearError('phone');
       }
 
-      // Address Line Validation
-      if (!addressLine) {
-        showError('addressLine', 'กรุณากรอกที่อยู่');
-        isValid = false;
+      // DOB Validation (Optional - only validates if any dropdown is selected)
+      const dayStr = document.getElementById('dob-day').value;
+      const monthStr = document.getElementById('dob-month').value;
+      const yearStr = document.getElementById('dob-year').value;
+
+      if (dayStr || monthStr || yearStr) {
+        if (!dayStr || !monthStr || !yearStr) {
+          showError('birthDate', 'กรุณาเลือกวันเดือนปีเกิดให้ครบถ้วน หรือปล่อยว่างไว้ทั้งหมด');
+          isValid = false;
+        } else {
+          const dayVal = parseInt(dayStr);
+          const monthVal = parseInt(monthStr);
+          const yearVal = parseInt(yearStr);
+          
+          if (!isValidDate(yearVal, monthVal, dayVal)) {
+            showError('birthDate', 'กรุณาเลือกวันเดือนปีเกิดที่ถูกต้อง (ระบุวันที่ไม่มีอยู่จริงในปฏิทิน)');
+            isValid = false;
+          } else {
+            clearError('birthDate');
+          }
+        }
       } else {
-        clearError('addressLine');
+        clearError('birthDate');
       }
 
-      // Sub-district Validation
-      if (!subDistrict) {
-        showError('subDistrict', 'กรุณากรอกแขวง/ตำบล');
-        isValid = false;
-      } else {
-        clearError('subDistrict');
-      }
-
-      // District Validation
-      if (!district) {
-        showError('district', 'กรุณากรอกเขต/อำเภอ');
-        isValid = false;
-      } else {
-        clearError('district');
-      }
-
-      // Province Validation
-      if (!province) {
-        showError('province', 'กรุณาเลือกจังหวัด');
-        isValid = false;
-      } else {
-        clearError('province');
-      }
-
-      // Postal Code Validation
-      if (!postalCode) {
-        showError('postalCode', 'กรุณากรอกรหัสไปรษณีย์');
-        isValid = false;
-      } else if (!/^[0-9]{5}$/.test(postalCode)) {
+      // Postal Code Validation (Optional)
+      if (postalCode && !/^[0-9]{5}$/.test(postalCode)) {
         showError('postalCode', 'กรุณากรอกรหัสไปรษณีย์ 5 หลัก');
         isValid = false;
       } else {
@@ -925,18 +904,24 @@
       `;
       errorPanel.classList.add('hidden');
 
-      // Concatenate dropdown values into a single date string (YYYY-MM-DD)
-      const dayVal = document.getElementById('dob-day').value.padStart(2, '0');
-      const monthVal = document.getElementById('dob-month').value;
-      const yearVal = document.getElementById('dob-year').value;
-      const formattedBirthDate = `${yearVal}-${monthVal}-${dayVal}`;
+      // Compile DOB
+      const dayStr = document.getElementById('dob-day').value;
+      const monthStr = document.getElementById('dob-month').value;
+      const yearStr = document.getElementById('dob-year').value;
+      const formattedBirthDate = (dayStr && monthStr && yearStr) ? `${yearStr}-${monthStr}-${dayStr.padStart(2, '0')}` : '';
+
+      // Determine final title
+      let finalTitle = document.getElementById('title').value;
+      if (finalTitle === 'อื่นๆ') {
+        finalTitle = document.getElementById('custom-title').value.trim();
+      }
 
       // Assemble payload
       const payload = {
         userId: lineUserProfile.userId,
         displayName: lineUserProfile.displayName,
         pictureUrl: lineUserProfile.pictureUrl || '',
-        title: document.getElementById('title').value,
+        title: finalTitle,
         fullName: document.getElementById('fullName').value.trim(),
         gender: document.getElementById('gender').value,
         birthDate: formattedBirthDate,
