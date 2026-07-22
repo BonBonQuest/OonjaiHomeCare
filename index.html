@@ -495,6 +495,8 @@
           ไม่พบข้อมูลการลงทะเบียนของคุณในระบบ Oonjai Homecare กรุณาลงทะเบียนสมาชิกเพื่อเข้าสู่ระบบ
         </p>
       </div>
+      <!-- Connection Error Alert (for fallback warning) -->
+      <div id="connection-error" class="hidden max-w-xs mx-auto p-3.5 bg-amber-50 border border-amber-200 text-amber-600 rounded-2xl text-xs font-medium"></div>
       <div class="pt-2">
         <button
           onclick="showScreen('registration-screen')"
@@ -647,6 +649,11 @@
       document.getElementById('member-profile-screen').classList.add('hidden');
       document.getElementById('not-member-screen').classList.add('hidden');
 
+      const connError = document.getElementById('connection-error');
+      if (connError) {
+        connError.classList.add('hidden');
+      }
+
       document.getElementById(screenId).classList.remove('hidden');
     }
 
@@ -747,9 +754,11 @@
         // Fallback: show "Not a Member" screen so they can proceed if they wish
         showScreen('not-member-screen');
         
-        const errorPanel = document.getElementById('api-error');
-        errorPanel.textContent = 'หมายเหตุ: ไม่สามารถติดต่อระบบตรวจสอบสมาชิกซ้ำได้ชั่วคราว (' + err.message + ')';
-        errorPanel.classList.remove('hidden');
+        const connError = document.getElementById('connection-error');
+        if (connError) {
+          connError.textContent = 'หมายเหตุ: ไม่สามารถติดต่อระบบตรวจสอบสมาชิกได้ชั่วคราว (' + err.message + ') คุณสามารถกดเข้าสมัครสมาชิกต่อได้';
+          connError.classList.remove('hidden');
+        }
       });
     }
 
